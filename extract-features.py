@@ -23,13 +23,13 @@ def extract_features(tree, entities, e1, e2) :
    if tkE1 is not None and tkE2 is not None:
 
       # features for tokens in between E1 and E2
-      for tk in range(tkE1+1, tkE2) :
-         if not tree.is_stopword(tk):
-            lemma = tree.get_lemma(tk).lower()
-            tag = tree.get_tag(tk)
-            # feature : clue verbs in between
-            if tag == "VB" and lemma in clue_verbs:
-               feats.add("clue_verb_is="+lemma)
+      # vib: if there is or there is not a clue verb in between
+      vib = False
+      for tk in range(tkE1 + 1, tkE2):
+         if tree.get_tag(tk) == "VB" and tree.get_lemma(tk).lower() in clue_verbs:
+            vib = True
+      feats.add('vib=' + str(vib))
+
 
       tk=tkE1+1
       try:
@@ -44,16 +44,21 @@ def extract_features(tree, entities, e1, e2) :
       feats.add("wib=" + word)
       feats.add("lpib=" + lemma + "_" + tag)
       
+      # feature: eib= entity in between
       eib = False
       for tk in range(tkE1+1, tkE2) :
          if tree.is_entity(tk, entities):
             eib = True 
-      
-	  # feature indicating the presence of an entity in between E1 and E2
       feats.add('eib='+ str(eib))
 
       # features about paths in the tree
       lcs = tree.get_LCS(tkE1,tkE2)
+      lcs_word = tree.get_word(lcs)
+      lcs_lemma = tree.get_lemma(lcs).lower()
+      lcs_tag = tree.get_tag(lcs)
+      feats.add("lcs_word=" + lcs_word)
+      feats.add("lcs_lemma=" + lcs_lemma)
+      feats.add("lcs_tag=" + lcs_tag)
       
       path1 = tree.get_up_path(tkE1,lcs)
       path1 = "<".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path1])
