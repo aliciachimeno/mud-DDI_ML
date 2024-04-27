@@ -3,7 +3,7 @@
 # Runs Stanford CoreNLP server
 
 # set this path to the directory where you decompressed StanfordCore
-STANFORDDIR=../stanford-corenlp-4.5.4
+STANFORDDIR=/Users/ali/Downloads/stanford-corenlp-4.5.6
 
 if [ -f /tmp/corenlp-server.running ]; then
     echo "server already running"

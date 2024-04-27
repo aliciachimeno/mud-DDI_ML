@@ -8,7 +8,8 @@ from xml.dom.minidom import parse
 from deptree import *
 #import patterns
 
-
+# clue verbs
+clue_verbs = ['resist', 'demonstrate', 'anticipate', 'interact', 'potentiate', 'result', 'recommend', 'maintain', 'reduce', 'titrate', 'experience', 'associate', 'monitor', 'increase', 'report', 'displace', 'show', 'inhibit', 'exert', 'combine', 'develop', 'warn', 'exercise', 'administer', 'decrease', 'avoid', 'emerge', 'augment', 'enhance', 'metabolize', 'adjust', 'amplify', 'adverse', 'discontinue', 'involve', 'investigate', 'eliminate', 'block', 'ameliorate']
 ## ------------------- 
 ## -- Convert a pair of drugs and their context in a feature vector
 
@@ -20,8 +21,16 @@ def extract_features(tree, entities, e1, e2) :
    tkE2 = tree.get_fragment_head(entities[e2]['start'],entities[e2]['end'])
 
    if tkE1 is not None and tkE2 is not None:
+
       # features for tokens in between E1 and E2
-      #for tk in range(tkE1+1, tkE2) :
+      for tk in range(tkE1+1, tkE2) :
+         if not tree.is_stopword(tk):
+            lemma = tree.get_lemma(tk).lower()
+            tag = tree.get_tag(tk)
+            # feature : clue verbs in between
+            if tag == "VB" and lemma in clue_verbs:
+               feats.add("clue_verb_is="+lemma)
+
       tk=tkE1+1
       try:
         while (tree.is_stopword(tk)):
