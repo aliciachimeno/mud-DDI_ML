@@ -22,13 +22,42 @@ def extract_features(tree, entities, e1, e2) :
 
    if tkE1 is not None and tkE2 is not None:
 
-      # features for tokens in between E1 and E2
-      # vib: if there is or there is not a clue verb in between
+
+      # feature: vib= (clue) verb in between
       vib = False
       for tk in range(tkE1 + 1, tkE2):
-         if tree.get_tag(tk) == "VB" and tree.get_lemma(tk).lower() in clue_verbs:
-            vib = True
+         if not tree.is_stopword(tk):
+            lemma = tree.get_lemma(tk).lower()
+            if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
+               vib = True
+               feats.add("cverb_inbetween="+lemma)
+            
       feats.add('vib=' + str(vib))
+
+      # feature: vbe1= (clue) verb before entity 1
+      vbe1=False
+      for tk in range(tkE1):
+         if not tree.is_stopword(tk):
+            lemma = tree.get_lemma(tk).lower()
+            if tree.get_tag(tk) == "VB" and tree.get_lemma(tk).lower() in clue_verbs:
+               vbe1 = True
+               feats.add("cverb_before="+lemma)
+      feats.add('vbe1=' + str(vbe1))
+
+      # features: 
+      #vae2= verb after entity 2 (boolean)
+      #cverb_after=
+      #
+      vae2=False
+      for tk in range(tkE2, tree.get_n_nodes()):
+         if not tree.is_stopword(tk):
+            lemma = tree.get_lemma(tk).lower()
+            if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
+               vae2 = True
+               feats.add("cverb_after="+lemma)
+      feats.add('vae2=' + str(vae2))
+      
+
 
 
       tk=tkE1+1
