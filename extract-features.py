@@ -1,4 +1,3 @@
-
 #! /usr/bin/python3
 
 import sys
@@ -9,7 +8,8 @@ from xml.dom.minidom import parse
 from deptree import *
 #import patterns
 
-
+# clue verbs
+clue_verbs = ['combine','resist', 'demonstrate', 'anticipate', 'interact', 'potentiate', 'result', 'recommend', 'maintain', 'reduce', 'titrate', 'experience', 'associate', 'monitor', 'increase', 'report', 'displace', 'show', 'inhibit', 'exert', 'combine', 'develop', 'warn', 'exercise', 'administer', 'decrease', 'avoid', 'emerge', 'augment', 'enhance', 'metabolize', 'adjust', 'amplify', 'adverse', 'discontinue', 'involve', 'investigate', 'eliminate', 'block', 'ameliorate']
 ## ------------------- 
 ## -- Convert a pair of drugs and their context in a feature vector
 
@@ -21,8 +21,44 @@ def extract_features(tree, entities, e1, e2) :
    tkE2 = tree.get_fragment_head(entities[e2]['start'],entities[e2]['end'])
 
    if tkE1 is not None and tkE2 is not None:
-      # features for tokens in between E1 and E2
-      #for tk in range(tkE1+1, tkE2) :
+
+      '''
+      # vib= (clue) verb in between
+      # cverb_inbetween
+      vib = False
+      for tk in range(tkE1 + 1, tkE2):
+         if not tree.is_stopword(tk):
+            lemma = tree.get_lemma(tk).lower()
+
+            if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
+               vib = True
+               feats.add("cverb_inbetween="+lemma)
+      feats.add('vib=' + str(vib))
+
+      # vbe1= (clue) verb before entity 1
+      # cverb_before=
+      vbe1=False
+      for tk in range(tkE1):
+         if not tree.is_stopword(tk):
+            lemma = tree.get_lemma(tk).lower()
+            if tree.get_tag(tk) == "VB" and tree.get_lemma(tk).lower() in clue_verbs:
+               vbe1 = True
+               feats.add("cverb_before="+lemma)
+      feats.add('vbe1=' + str(vbe1))
+
+      # features: 
+      #vae2= verb after entity 2 (boolean)
+      #cverb_after=
+      vae2=False
+      for tk in range(tkE2, tree.get_n_nodes()):
+         if not tree.is_stopword(tk):
+            lemma = tree.get_lemma(tk).lower()
+            if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
+               vae2 = True
+               feats.add("cverb_after="+lemma)
+      feats.add('vae2=' + str(vae2))
+      
+      '''
       tk=tkE1+1
       try:
         while (tree.is_stopword(tk)):
@@ -36,16 +72,21 @@ def extract_features(tree, entities, e1, e2) :
       feats.add("wib=" + word)
       feats.add("lpib=" + lemma + "_" + tag)
       
+      # feature: eib= entity in between
       eib = False
       for tk in range(tkE1+1, tkE2) :
          if tree.is_entity(tk, entities):
             eib = True 
-      
-	  # feature indicating the presence of an entity in between E1 and E2
       feats.add('eib='+ str(eib))
 
       # features about paths in the tree
       lcs = tree.get_LCS(tkE1,tkE2)
+      lcs_word = tree.get_word(lcs)
+      lcs_lemma = tree.get_lemma(lcs).lower()
+      lcs_tag = tree.get_tag(lcs)
+      feats.add("lcs_word=" + lcs_word)
+      feats.add("lcs_lemma=" + lcs_lemma)
+      feats.add("lcs_tag=" + lcs_tag)
       
       path1 = tree.get_up_path(tkE1,lcs)
       path1 = "<".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path1])
@@ -112,3 +153,4 @@ for f in listdir(datadir) :
             # resulting vector
             if len(feats) != 0:
               print(sid, id_e1, id_e2, dditype, "\t".join(feats), sep="\t")
+
