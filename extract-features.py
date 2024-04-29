@@ -19,10 +19,16 @@ def extract_features(tree, entities, e1, e2) :
    # get head token for each gold entity
    tkE1 = tree.get_fragment_head(entities[e1]['start'],entities[e1]['end'])
    tkE2 = tree.get_fragment_head(entities[e2]['start'],entities[e2]['end'])
-
+  
    if tkE1 is not None and tkE2 is not None:
 
-      
+      '''
+      word_count = 0
+      for tk in range(tkE1 + 1, tkE2):
+         if tk != tkE1 and tk != tkE2 and not tree.is_stopword(tk): 
+            word_count += 1
+      feats.add('word_count_between=' + str(word_count))
+      '''
       # vib= (clue) verb in between
       # cverb_inbetween
       vib = False
@@ -32,8 +38,8 @@ def extract_features(tree, entities, e1, e2) :
 
             if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
                vib = True
-               #feats.add("cverb_inbetween="+lemma)
-      feats.add('vib=' + str(vib))
+               feats.add("cverb_inbetween="+lemma)
+      #feats.add('vib=' + str(vib))
 
       # vbe1= (clue) verb before entity 1
       # cverb_before=
@@ -43,8 +49,8 @@ def extract_features(tree, entities, e1, e2) :
             lemma = tree.get_lemma(tk).lower()
             if tree.get_tag(tk) == "VB" and tree.get_lemma(tk).lower() in clue_verbs:
                vbe1 = True
-               #feats.add("cverb_before="+lemma)
-      feats.add('vbe1=' + str(vbe1))
+               feats.add("cverb_before="+lemma)
+      #feats.add('vbe1=' + str(vbe1))
 
       # features: 
       #vae2= verb after entity 2 (boolean)
@@ -55,10 +61,13 @@ def extract_features(tree, entities, e1, e2) :
             lemma = tree.get_lemma(tk).lower()
             if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
                vae2 = True
-               #feats.add("cverb_after="+lemma)
-      feats.add('vae2=' + str(vae2))
+               feats.add("cverb_after="+lemma)
+      #feats.add('vae2=' + str(vae2))
       
-      
+      # path of pos tags
+      for tk in range(tkE1 +1, tkE2 -1): 
+         feats.add('pos_' + str(tk - tkE1) + '=' + tree.get_tag(tk))
+
       tk=tkE1+1
       try:
         while (tree.is_stopword(tk)):
