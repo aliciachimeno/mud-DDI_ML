@@ -22,13 +22,13 @@ def extract_features(tree, entities, e1, e2) :
   
    if tkE1 is not None and tkE2 is not None:
 
-      '''
+      
       word_count = 0
       for tk in range(tkE1 + 1, tkE2):
          if tk != tkE1 and tk != tkE2 and not tree.is_stopword(tk): 
             word_count += 1
       feats.add('word_count_between=' + str(word_count))
-      '''
+      
       # vib= (clue) verb in between
       # cverb_inbetween
       vib = False
@@ -71,7 +71,7 @@ def extract_features(tree, entities, e1, e2) :
       tk=tkE1+1
       try:
         while (tree.is_stopword(tk)):
-          tk += 1
+         tk += 1
       except:
         return set()
       word  = tree.get_word(tk)
