@@ -33,7 +33,7 @@ def extract_features(tree, entities, e1, e2) :
             if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
                vib = True
                feats.add("cverb_inbetween="+lemma)
-      feats.add('vib=' + str(vib))
+      #feats.add('vib=' + str(vib))
 
       # vbe1= (clue) verb before entity 1
       # cverb_before=
@@ -44,7 +44,7 @@ def extract_features(tree, entities, e1, e2) :
             if tree.get_tag(tk) == "VB" and tree.get_lemma(tk).lower() in clue_verbs:
                vbe1 = True
                feats.add("cverb_before="+lemma)
-      feats.add('vbe1=' + str(vbe1))
+      #feats.add('vbe1=' + str(vbe1))
 
       # features: 
       #vae2= verb after entity 2 (boolean)
@@ -56,7 +56,7 @@ def extract_features(tree, entities, e1, e2) :
             if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
                vae2 = True
                feats.add("cverb_after="+lemma)
-      feats.add('vae2=' + str(vae2))
+      #feats.add('vae2=' + str(vae2))
       
       
       tk=tkE1+1
