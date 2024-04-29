@@ -22,20 +22,23 @@ def extract_features(tree, entities, e1, e2) :
   
    if tkE1 is not None and tkE2 is not None:
 
-      
-      word_count = 0
-      for tk in range(tkE1 + 1, tkE2):
-         if tk != tkE1 and tk != tkE2 and not tree.is_stopword(tk): 
-            word_count += 1
-      feats.add('word_count_between=' + str(word_count))
-      
+      feats.add("count_tokens_in_bt="+str(tkE2 - tkE1))
+      # features for tkE1
+      feats.add('tkE1_word='+tree.get_word(tkE1))
+      feats.add('tkE1_lemma='+tree.get_lemma(tkE1).lower())
+      feats.add('tkE1_tag='+tree.get_tag(tkE1))
+
+      # features for tkE2
+      feats.add('tkE2_word='+tree.get_word(tkE2))
+      feats.add('tkE2_lemma='+tree.get_lemma(tkE2).lower())
+      feats.add('tkE2_tag='+tree.get_tag(tkE2))
+
       # vib= (clue) verb in between
       # cverb_inbetween
       vib = False
-      for tk in range(tkE1 + 1, tkE2):
+      for tk in range(tkE1 +1, tkE2):
          if not tree.is_stopword(tk):
             lemma = tree.get_lemma(tk).lower()
-
             if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
                vib = True
                feats.add("cverb_inbetween="+lemma)
