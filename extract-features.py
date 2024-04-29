@@ -22,7 +22,7 @@ def extract_features(tree, entities, e1, e2) :
 
    if tkE1 is not None and tkE2 is not None:
 
-      '''
+      
       # vib= (clue) verb in between
       # cverb_inbetween
       vib = False
@@ -58,7 +58,7 @@ def extract_features(tree, entities, e1, e2) :
                feats.add("cverb_after="+lemma)
       feats.add('vae2=' + str(vae2))
       
-      '''
+      
       tk=tkE1+1
       try:
         while (tree.is_stopword(tk)):
