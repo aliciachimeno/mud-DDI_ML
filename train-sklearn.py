@@ -3,6 +3,7 @@
 import sys
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import GridSearchCV
 from sklearn.svm import LinearSVC, SVC
 import numpy as np
 import argparse
@@ -21,6 +22,7 @@ def load_data(data):
 	return features, labels
 
 
+
 if __name__ == '__main__':
 
 	model_file = sys.argv[1]
@@ -33,10 +35,15 @@ if __name__ == '__main__':
 	v = DictVectorizer()
 	X_train = v.fit_transform(train_features)
 
-	#clf = MultinomialNB(alpha=0.01)
-	#clf.partial_fit(X_train, y_train, classes)
-	clf = SVC(kernel='rbf', probability=True)
-	clf.fit(X_train, y_train)
+
+	# yo
+ 
+ 
+	clf = MultinomialNB(alpha=0.001)
+	clf.partial_fit(X_train, y_train, classes)
+
+	#clf = SVC(kernel='rbf', probability=True)
+	#clf.fit(X_train, y_train)
 	#Save classifier and DictVectorizer
 	dump(clf, model_file) 
 	dump(v, vectorizer_file)
