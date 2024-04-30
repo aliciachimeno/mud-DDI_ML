@@ -39,7 +39,7 @@ if __name__ == '__main__':
 	# yo
  
  
-	clf = MultinomialNB(alpha=1)
+	clf = MultinomialNB(alpha=0.01)
 	clf.partial_fit(X_train, y_train, classes)
 
 	#clf = SVC(kernel='rbf', probability=True)
