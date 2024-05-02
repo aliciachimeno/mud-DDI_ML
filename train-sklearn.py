@@ -35,11 +35,9 @@ if __name__ == '__main__':
 	v = DictVectorizer()
 	X_train = v.fit_transform(train_features)
 
-
-	# yo
- 
- 
-	clf = MultinomialNB(alpha=0.015)
+	
+	
+	clf = MultinomialNB(alpha=0.01)
 	clf.partial_fit(X_train, y_train, classes)
 
 	#clf = SVC(kernel='rbf', probability=True)
