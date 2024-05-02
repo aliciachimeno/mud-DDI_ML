@@ -31,15 +31,16 @@ def extract_features(tree, entities, e1, e2) :
       # features for tkE1
       feats.add('tkE1_word='+tree.get_word(tkE1))
       feats.add('tkE1_lemma='+tree.get_lemma(tkE1).lower())
-      #feats.add('tkE1_tag='+tree.get_tag(tkE1))
-      #feats.add('tkE1_word_lenght='+str(max(len(tree.get_word(tkE1)),0)))
+      feats.add('tkE1_tag='+tree.get_tag(tkE1))
 
       # features for tkE2
       feats.add('tkE2_word='+tree.get_word(tkE2))
       feats.add('tkE2_lemma='+tree.get_lemma(tkE2).lower())
-      #feats.add('tkE2_tag='+tree.get_tag(tkE2))
-      #feats.add('tkE2_word_lenght='+str(max(len(tree.get_word(tkE2)),0)))
+      feats.add('tkE2_tag='+tree.get_tag(tkE2))
 
+      feats.add("lemma_pair="+"_".join(sorted([tree.get_lemma(tkE1).lower(),tree.get_lemma(tkE2).lower()])))
+      feats.add("tag_pair="+"_".join(sorted([tree.get_tag(tkE1),tree.get_tag(tkE2)])))
+      feats.add("word_pair="+"_".join(sorted([tree.get_word(tkE1),tree.get_word(tkE2)])))
 
       # vib= (clue) verb in between
       # cverb_inbetween
@@ -177,9 +178,11 @@ def extract_features(tree, entities, e1, e2) :
       lcs_word = tree.get_word(lcs)
       lcs_lemma = tree.get_lemma(lcs).lower()
       lcs_tag = tree.get_tag(lcs)
+      rel = tree.get_rel(lcs)
       feats.add("lcs_word=" + lcs_word)
       feats.add("lcs_lemma=" + lcs_lemma)
       feats.add("lcs_tag=" + lcs_tag)
+
 
       path1 = tree.get_up_path(tkE1,lcs)
       path1 = "<".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path1])
