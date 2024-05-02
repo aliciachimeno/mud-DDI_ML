@@ -28,7 +28,7 @@ if __name__ == '__main__':
 	model_file = sys.argv[1]
 	vectorizer_file = sys.argv[2] 	
 
-	train_features, y_train = load_data(sys.stdin)
+	train_features, y_train = load_data(sys.stdin,allowed_features)
 	y_train = np.asarray(y_train)
 	classes = np.unique(y_train)
 
@@ -37,11 +37,11 @@ if __name__ == '__main__':
 
 	
 	
-	clf = MultinomialNB(alpha=0.01)
-	clf.partial_fit(X_train, y_train, classes)
+	#clf = MultinomialNB(alpha=0.01)
+	#clf.partial_fit(X_train, y_train, classes)
 
-	#clf = SVC(kernel='rbf', probability=True)
-	#clf.fit(X_train, y_train)
+	clf = SVC(kernel='rbf', probability=True)
+	clf.fit(X_train, y_train)
 	#Save classifier and DictVectorizer
 	dump(clf, model_file) 
 	dump(v, vectorizer_file)

@@ -48,10 +48,7 @@ def extract_features(tree, entities, e1, e2) :
       for tk in range(tkE1 +1, tkE2):
          if not tree.is_stopword(tk):
             lemma = tree.get_lemma(tk).lower()
-            if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
-               vib = True
-               feats.add("cverb_inbetween="+lemma)
-            if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
+            if tree.get_tag(tk) == "VB":
                vib = True
                feats.add("cverb_inbetween="+lemma)
       #feats.add('vib=' + str(vib))
@@ -64,8 +61,8 @@ def extract_features(tree, entities, e1, e2) :
       for tk in range(tkE1):
          if not tree.is_stopword(tk):
             lemma = tree.get_lemma(tk).lower()
-            if tree.get_tag(tk) == "VB" and tree.get_lemma(tk).lower() in clue_verbs:
-               vbe1 = True
+            if tree.get_tag(tk) == "VB":
+               #vbe1 = True
                feats.add("cverb_before="+lemma)
       #feats.add('vbe1=' + str(vbe1))
 
@@ -76,8 +73,8 @@ def extract_features(tree, entities, e1, e2) :
       for tk in range(tkE2, tree.get_n_nodes()):
          if not tree.is_stopword(tk):
             lemma = tree.get_lemma(tk).lower()
-            if tree.get_tag(tk) == "VB" and lemma in clue_verbs:
-               vae2 = True
+            if tree.get_tag(tk) == "VB":
+               #vae2 = True
                feats.add("cverb_after="+lemma)
       #feats.add('vae2=' + str(vae2))
       
@@ -85,17 +82,6 @@ def extract_features(tree, entities, e1, e2) :
       #for tk in range(tkE1 +1, tkE2 ): 
       #  feats.add('between_pos_' + str(tk - tkE1) + '=' + tree.get_tag(tk))
       
-
-      '''
-      verbs_before_e1 = sum(1 for tk in range(tkE1) if not tree.is_stopword(tk) and tree.get_tag(tk) == "VB")
-      feats.add("number_of_verbs_before_e1=" + str(verbs_before_e1))
-        
-      verbs_between = sum(1 for tk in range(tkE1 + 1, tkE2) if not tree.is_stopword(tk) and tree.get_tag(tk) == "VB")
-      feats.add("number_of_verbs_between=" + str(verbs_between))
-        
-      verbs_after_e2 = sum(1 for tk in range(tkE2, tree.get_n_nodes()) if not tree.is_stopword(tk) and tree.get_tag(tk) == "VB")
-      feats.add("number_of_verbs_after_e2=" + str(verbs_after_e2))
-      '''
 
       
 
@@ -144,21 +130,14 @@ def extract_features(tree, entities, e1, e2) :
       feats.add('lemma_afterE1=' + ','.join(lemma_afterE1))
 
 
-      '''
-      pos_tags_to_check = ['NN','NNS','JJ'] # POS tags to check
-      for pos_tag in pos_tags_to_check:
-         if pos_tag in words_between_pos:
-            feats.add("between_pos_present=" +pos_tag )
-         else:
-            feats.add("between_pos_absent=" +pos_tag )
-      '''
-
+      
       tk=tkE1+1
       try:
         while (tree.is_stopword(tk)):
          tk += 1
       except:
         return set()
+      
       word  = tree.get_word(tk)
       lemma = tree.get_lemma(tk).lower()
       tag = tree.get_tag(tk)
@@ -183,7 +162,6 @@ def extract_features(tree, entities, e1, e2) :
       feats.add("lcs_lemma=" + lcs_lemma)
       feats.add("lcs_tag=" + lcs_tag)
 
-
       path1 = tree.get_up_path(tkE1,lcs)
       path1 = "<".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path1])
       feats.add("path1="+path1)
@@ -194,6 +172,28 @@ def extract_features(tree, entities, e1, e2) :
 
       path = path1+"<"+tree.get_lemma(lcs)+"_"+tree.get_rel(lcs)+">"+path2      
       feats.add("path="+path)
+
+      # features about parent entities
+      p1 = tree.get_parent(tkE1)
+      p2 = tree.get_parent(tkE2)
+
+      # parent of E1 
+      if p1 is not None:
+         lemma = tree.get_lemma(p1).lower()
+         tag = tree.get_tag(p1)
+         feats.add("lp1=" + lemma)
+         feats.add("tp1=" + tag) 
+      
+      # parent of E2
+      if p2 is not None:
+         lemma = tree.get_lemma(p2).lower()
+         tag = tree.get_tag(p2)
+         feats.add("lp2=" + lemma)
+         feats.add("tp2=" + tag) 
+   
+
+      
+
       
    return feats
 
