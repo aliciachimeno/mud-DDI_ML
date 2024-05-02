@@ -31,13 +31,15 @@ def extract_features(tree, entities, e1, e2) :
       # features for tkE1
       feats.add('tkE1_word='+tree.get_word(tkE1))
       feats.add('tkE1_lemma='+tree.get_lemma(tkE1).lower())
-      feats.add('tkE1_tag='+tree.get_tag(tkE1))
+      #feats.add('tkE1_tag='+tree.get_tag(tkE1))
+      #feats.add('tkE1_word_lenght='+str(max(len(tree.get_word(tkE1)),0)))
 
       # features for tkE2
       feats.add('tkE2_word='+tree.get_word(tkE2))
       feats.add('tkE2_lemma='+tree.get_lemma(tkE2).lower())
+      #feats.add('tkE2_tag='+tree.get_tag(tkE2))
+      #feats.add('tkE2_word_lenght='+str(max(len(tree.get_word(tkE2)),0)))
 
-      feats.add('tkE2_tag='+tree.get_tag(tkE2))
 
       # vib= (clue) verb in between
       # cverb_inbetween
@@ -79,15 +81,10 @@ def extract_features(tree, entities, e1, e2) :
       #feats.add('vae2=' + str(vae2))
       
       # path of pos tags between
-      for tk in range(tkE1 +1, tkE2 ): 
-        feats.add('between_pos_' + str(tk - tkE1) + '=' + tree.get_tag(tk))
+      #for tk in range(tkE1 +1, tkE2 ): 
+      #  feats.add('between_pos_' + str(tk - tkE1) + '=' + tree.get_tag(tk))
       
 
-      
-      #for tk in range(tkE1):
-      #  feats.add('before_pos_' + str(tk - tkE1) + '=' + tree.get_tag(tk))
-      #for tk in range(tkE2, tree.get_n_nodes()):
-      #  feats.add('after_pos_' + str(tk - tkE1) + '=' + tree.get_tag(tk))
       '''
       verbs_before_e1 = sum(1 for tk in range(tkE1) if not tree.is_stopword(tk) and tree.get_tag(tk) == "VB")
       feats.add("number_of_verbs_before_e1=" + str(verbs_before_e1))
@@ -99,38 +96,52 @@ def extract_features(tree, entities, e1, e2) :
       feats.add("number_of_verbs_after_e2=" + str(verbs_after_e2))
       '''
 
-      '''
-      before_tags = [tree.tree.nodes[n]["tag"][0] for n in tree.get_nodes() if n < tkE1]
-      between_tags = [tree.tree.nodes[n]["tag"][0] for n in tree.get_nodes() if tkE1 <= n < tkE2 ]
-      after_tags = [tree.tree.nodes[n]["tag"][0] for n in tree.get_nodes() if n > tkE2]
-      feats.add('tags_pre=' + ",".join(before_tags))
-      feats.add('tags_bet=' + ",".join(between_tags))
-      feats.add('tags_aft=' + ",".join(after_tags))
-      '''
-      
       
 
-      lemma_before = []
-      tags_before = []
+      lemma_beforeE1 = []
+      tags_beforeE1 = []
       for i in range(max(tkE1 - 3,0), tkE1):
           #if not tree.is_stopword(tk):
             lemma = tree.get_lemma(i).lower()
             tag = tree.get_tag(i)
-            tags_before.append(tag)
-            lemma_before.append(lemma)
-      feats.add('before_tag=' + ','.join(tags_before))
-      feats.add('before_lemma=' + ','.join(lemma_before))
+            tags_beforeE1.append(tag)
+            lemma_beforeE1.append(lemma)
+      feats.add('before_tagE1=' + ','.join(tags_beforeE1))
+      feats.add('before_lemmaE1=' + ','.join(lemma_beforeE1))
       
-      lemma_after = []
-      tags_after = []
+      lemma_afterE2 = []
+      tags_afterE2 = []
       for i in range(tkE2, min(tkE2+3,tree.get_n_nodes())):
           #if not tree.is_stopword(tk):
             lemma = tree.get_lemma(i).lower()
             tag = tree.get_tag(i)
-            tags_after.append(tag)
-            lemma_after.append(lemma)
-      feats.add('tags_after=' + ','.join(tags_after))
-      feats.add('lemma_after=' + ','.join(lemma_after))
+            tags_afterE2.append(tag)
+            lemma_afterE2.append(lemma)
+      feats.add('tags_afterE2=' + ','.join(tags_afterE2))
+      feats.add('lemma_afterE2=' + ','.join(lemma_afterE2))
+
+      lemma_beforeE2 = []
+      tags_beforeE2 = []
+      for i in range(max(tkE2 - 3,0), tkE2):
+          #if not tree.is_stopword(tk):
+            lemma = tree.get_lemma(i).lower()
+            tag = tree.get_tag(i)
+            tags_beforeE2.append(tag)
+            lemma_beforeE2.append(lemma)
+      feats.add('before_tagE2=' + ','.join(tags_beforeE2))
+      feats.add('before_lemmaE2=' + ','.join(lemma_beforeE2))
+      
+      lemma_afterE1 = []
+      tags_afterE1 = []
+      for i in range(tkE1, min(tkE1+3,tree.get_n_nodes())):
+          #if not tree.is_stopword(tk):
+            lemma = tree.get_lemma(i).lower()
+            tag = tree.get_tag(i)
+            tags_afterE1.append(tag)
+            lemma_afterE1.append(lemma)
+      feats.add('tags_afterE1=' + ','.join(tags_afterE1))
+      feats.add('lemma_afterE1=' + ','.join(lemma_afterE1))
+
 
       '''
       pos_tags_to_check = ['NN','NNS','JJ'] # POS tags to check
