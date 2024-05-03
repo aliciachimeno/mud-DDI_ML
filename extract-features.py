@@ -13,7 +13,6 @@ advise_verbs = ['should','recommend','advise', 'suggest', 'advocate', 'propose',
 effect_verbs = ['enhance', 'inhibit', 'potentiate', 'augment', 'decrease', 'increase', 'impact', 'influence', 'modify', 'affect']
 mechanism_verbs = ['inhibit', 'induce', 'enhance', 'decrease', 'increase', 'block', 'affect', 'modulate', 'alter', 'regulate']
 int_verbs = ['mention', 'report', 'document', 'note', 'discuss', 'identify', 'recognize', 'establish', 'confirm', 'observe']
-clue_verbs = ['combine','resist', 'demonstrate', 'anticipate', 'interact', 'potentiate', 'result', 'recommend', 'maintain', 'reduce', 'titrate', 'experience', 'associate', 'monitor', 'increase', 'report', 'displace', 'show', 'inhibit', 'exert', 'combine', 'develop', 'warn', 'exercise', 'administer', 'decrease', 'avoid', 'emerge', 'augment', 'enhance', 'metabolize', 'adjust', 'amplify', 'adverse', 'discontinue', 'involve', 'investigate', 'eliminate', 'block', 'ameliorate']
 #clue_verbs = advise_verbs+effect_verbs+mechanism_verbs+int_verbs
 ## ------------------- 
 ## -- Convert a pair of drugs and their context in a feature vector
@@ -84,7 +83,6 @@ def extract_features(tree, entities, e1, e2) :
       #  feats.add('between_pos_' + str(tk - tkE1) + '=' + tree.get_tag(tk))
       
 
-      
 
       lemma_beforeE1 = []
       tags_beforeE1 = []
@@ -94,8 +92,8 @@ def extract_features(tree, entities, e1, e2) :
             tag = tree.get_tag(i)
             tags_beforeE1.append(tag)
             lemma_beforeE1.append(lemma)
-      feats.add('before_tagE1=' + ','.join(tags_beforeE1))
-      feats.add('before_lemmaE1=' + ','.join(lemma_beforeE1))
+      feats.add('tags_beforeE1=' + ','.join(tags_beforeE1))
+      feats.add('lemmas_beforeE1=' + ','.join(lemma_beforeE1))
       
       lemma_afterE2 = []
       tags_afterE2 = []
@@ -106,7 +104,7 @@ def extract_features(tree, entities, e1, e2) :
             tags_afterE2.append(tag)
             lemma_afterE2.append(lemma)
       feats.add('tags_afterE2=' + ','.join(tags_afterE2))
-      feats.add('lemma_afterE2=' + ','.join(lemma_afterE2))
+      feats.add('lemmas_afterE2=' + ','.join(lemma_afterE2))
 
       lemma_beforeE2 = []
       tags_beforeE2 = []
@@ -182,15 +180,15 @@ def extract_features(tree, entities, e1, e2) :
       if p1 is not None:
          lemma = tree.get_lemma(p1).lower()
          tag = tree.get_tag(p1)
-         feats.add("lp1=" + lemma)
-         feats.add("tp1=" + tag) 
+         feats.add("lemma_p1=" + lemma)
+         feats.add("tag_p1=" + tag) 
       
       # parent of E2
       if p2 is not None:
          lemma = tree.get_lemma(p2).lower()
          tag = tree.get_tag(p2)
-         feats.add("lp2=" + lemma)
-         feats.add("tp2=" + tag) 
+         feats.add("lemma_p2=" + lemma)
+         feats.add("tag_p2=" + tag) 
    
 
       
