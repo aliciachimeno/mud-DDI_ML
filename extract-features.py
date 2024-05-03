@@ -27,8 +27,7 @@ def extract_features(tree, entities, e1, e2) :
   
    if tkE1 is not None and tkE2 is not None:
 
-      feats.add("count_tokens_in_bt="+str(tkE2 - tkE1))
-      # features for tkE1
+      # features for tkE2
       feats.add('tkE1_word='+tree.get_word(tkE1))
       feats.add('tkE1_lemma='+tree.get_lemma(tkE1).lower())
       feats.add('tkE1_tag='+tree.get_tag(tkE1))
@@ -38,6 +37,8 @@ def extract_features(tree, entities, e1, e2) :
       feats.add('tkE2_lemma='+tree.get_lemma(tkE2).lower())
       feats.add('tkE2_tag='+tree.get_tag(tkE2))
 
+      # features using tkE1 and tkE2 combined:
+      feats.add("count_tokens_bt="+str(tkE2 - tkE1))
       feats.add("lemma_pair="+"_".join(sorted([tree.get_lemma(tkE1).lower(),tree.get_lemma(tkE2).lower()])))
       feats.add("tag_pair="+"_".join(sorted([tree.get_tag(tkE1),tree.get_tag(tkE2)])))
       feats.add("word_pair="+"_".join(sorted([tree.get_word(tkE1),tree.get_word(tkE2)])))
