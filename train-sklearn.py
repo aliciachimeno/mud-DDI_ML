@@ -3,9 +3,12 @@
 import sys
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.svm import LinearSVC, SVC
 import numpy as np
+from xgboost import XGBClassifier
 import argparse
 from joblib import dump
 
@@ -58,11 +61,24 @@ if __name__ == '__main__':
 
 	
 	
-	clf = MultinomialNB(alpha=0.01)
-	clf.partial_fit(X_train, y_train, classes)
+	#clf = MultinomialNB(alpha=0.01)
+	#clf.partial_fit(X_train, y_train, classes)
+	'''
+	clf = CRF(algorithm='lbfgs', # Choose optimization algorithm, here 'lbfgs' is used
+          c1=0.1,             # L1 regularization coefficient
+          c2=0.1,             # L2 regularization coefficient
+          max_iterations=100, # Maximum number of iterations
+          all_possible_transitions=True) # Use all possible transitions between labels
 
-	#clf = SVC(kernel='linear', probability=True)
 	#clf.fit(X_train, y_train)
+	'''
+	
+	#clf = SVC(kernel='poly', degree=3, probability=True)
+	#clf = XGBClassifier()
+	clf = SVC(kernel='linear',probability=True)
+	clf.fit(X_train, y_train)
+	#clf = RandomForestClassifier(n_estimators=100, random_state=42)
+	#clf.fit(X_train, y_train)	
 	#Save classifier and DictVectorizer
 	dump(clf, model_file) 
 	dump(v, vectorizer_file)
